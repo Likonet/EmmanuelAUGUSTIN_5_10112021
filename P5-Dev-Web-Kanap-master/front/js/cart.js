@@ -32,8 +32,19 @@ fetch("http://localhost:3000/api/products")
                 </div>
               </div>
             </div>
-          </article> `
-    }})
-    .catch(function(err) {
-      
-    });
+          </article> `;
+          
+            
+          Array.from(document.querySelectorAll('.itemQuantity')).forEach(item => {
+
+          item.addEventListener('change', (e) => {
+            console.log(e.target.value) 
+          })
+           })
+          
+          
+        }
+        })
+        .catch(function() {
+              
+        });  

@@ -24,13 +24,7 @@ fetch("http://localhost:3000/api/products/"+idSofa)
             for(let i = 0 ; i< products.colors.length ; i++){
               document.getElementById('colors').innerHTML +=`<option value="${products.colors[i]}">${products.colors[i]}</option>`
             }
-                
-         /*   })
-   
-   .catch(function() {
-      
-    });
-    */
+  
 
     document.getElementById('addToCart').addEventListener('click', (e) => {
       const productToOrder= getProductFromForm(idSofa);
