@@ -25,10 +25,12 @@ fetch("http://localhost:3000/api/products/"+idSofa)
               document.getElementById('colors').innerHTML +=`<option value="${products.colors[i]}">${products.colors[i]}</option>`
             }
                 
-    })
-    .catch(function() {
+         /*   })
+   
+   .catch(function() {
       
     });
+    */
 
     document.getElementById('addToCart').addEventListener('click', (e) => {
       const productToOrder= getProductFromForm(idSofa);
@@ -38,15 +40,23 @@ fetch("http://localhost:3000/api/products/"+idSofa)
     
 
     function getProductFromForm(idSofa){
-    
+      const imageSofa = products.imageUrl;
+      const descriptionSofa = products.description;
+      const price = products.price;
+      const nameSofa = products.name;
       const color = document.getElementById('colors').value;
       const quantity= document.getElementById('quantity').value;
       const productToOrder = { 
         id: idSofa,
         color,
-        quantity   
+        quantity,
+        nameSofa,
+        imageSofa,
+        descriptionSofa,
+        price
       };
       return productToOrder;
+      console.log(productToOrder);
     
      
     }
@@ -62,7 +72,6 @@ fetch("http://localhost:3000/api/products/"+idSofa)
   // On cherche dans le panier
   let findProduct = panier.find(elt => elt.id === productToOrder.id && elt.color === productToOrder.color)
   console.log(findProduct)
-  console.log(productToOrder)
   
   if(findProduct){
     findProduct.quantity = parseInt(findProduct.quantity) + parseInt(productToOrder.quantity); 
@@ -73,7 +82,9 @@ fetch("http://localhost:3000/api/products/"+idSofa)
   localStorage.setItem('cart', JSON.stringify(panier));
   
 }
-
-   
+})
+.catch(function() {
+      
+});  
 
    
