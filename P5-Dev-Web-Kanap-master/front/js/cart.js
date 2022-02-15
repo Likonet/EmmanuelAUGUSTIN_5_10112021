@@ -40,16 +40,21 @@ fetch("http://localhost:3000/api/products")
           Array.from(document.querySelectorAll('.itemQuantity')).forEach(item => { // for each chaque élément du tableau
           item.addEventListener('change', (e) => {
             let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ;
-            let number = e.target.value
+            let newQuantity = e.target.value
             console.log(e.target.value) 
-            list[0].quantity = e.target.value;
             console.log(nameOfSofa);
-            console.log (number);
+            //console.log (number);
 
             let tesst = list.find (elt => elt.nameSofa === nameOfSofa);
+            let indiceArray = list.findIndex(elt => elt.nameSofa === nameOfSofa);
             console.log (tesst)
-            tesst.quantity = number;
-            console.log (testt)
+            console.log (tesst)
+            list[indiceArray].quantity = newQuantity;
+            console.log(list);
+            localStorage.clear();
+            
+            localStorage.setItem('cart', JSON.stringify(list));
+
 
           }) 
        
