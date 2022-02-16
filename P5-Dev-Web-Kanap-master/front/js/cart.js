@@ -34,9 +34,6 @@ fetch("http://localhost:3000/api/products")
             </div>
           </article> `;
           
-          let ar = Array.from(document.querySelectorAll('.itemQuantity'));
-          console.log(ar)
-          console.log(ar.length)
           Array.from(document.querySelectorAll('.itemQuantity')).forEach(item => { // for each chaque élément du tableau
           item.addEventListener('change', (e) => {
             let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ;
@@ -59,6 +56,22 @@ fetch("http://localhost:3000/api/products")
           }) 
        
            })
+
+           Array.from(document.querySelectorAll('.deleteItem')).forEach(item => { // for each chaque élément du tableau
+            item.addEventListener('click', (e) => {
+              let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ;
+              let indiceArray = list.findIndex(elt => elt.nameSofa === nameOfSofa);
+                if (indiceArray > -1) {
+             list.splice(indiceArray, 1);
+                }
+              console.log(list)
+              
+              localStorage.setItem('cart', JSON.stringify(list));
+             window.location.reload()
+  
+            }) 
+         
+             })
           
           
           // Array.from(document.getElementsByClassName('deleteItem')).forEach(item => {
