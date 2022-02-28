@@ -1,3 +1,4 @@
+let productsID = []
 fetch("http://localhost:3000/api/products")
     .then(function(res) {
       if (res.ok) {
@@ -14,15 +15,15 @@ fetch("http://localhost:3000/api/products")
          console.log (list.length)
          console.log (list[3].quantity)
           let totalQuantity = 0
-          let productID = []
+          
       
           let sum = list.values();
           for (const tees of sum) {
             totalQuantity += parseInt(tees.quantity);
-            productID.push(tees.id);
+            productsID.push(tees.id);
             
           }
-         console.log (productID)
+         console.log (productsID)
          
          for (let hello of list) {
              console.log(hello)
@@ -100,23 +101,68 @@ fetch("http://localhost:3000/api/products")
              })
     
 
-             document.getElementById("order").addEventListener("submit", (e) => {send(e)});
-             function send(e) {
-                e.preventDefault();
-                // 1. Je viens récupérer les donnnées du formulaire
-                let contact = {
-                    firstName: document.getElementById("firstName").value,
-                    lastName: document.getElementById("lastName").value,
-                    address: document.getElementById("address").value,
-                    city: document.getElementById("city").value,
-                    email: document.getElementById("email").value
-                  }
+             document.querySelector(".cart__order__form").addEventListener("submit", (e) => {
+                 e.preventDefault();
+                send(e)
+                });
+             
                 // 2. Je viens verifier les donnees du formulaire
+
+    
+
+              document.getElementById("firstName").addEventListener("input", function(e) {
+               
+                if (/^[a-zA-Z]{2,}$/.test(e.target.value)) {
+                    document.getElementById("firstName").style.backgroundColor = "green";
+                    document.getElementById("firstNameErrorMsg").innerText = "";
+
+                } else {
+                    document.getElementById("firstNameErrorMsg").innerText = "Prénom invalide entrez seulemnt des caractères a,b,c...";
+                    document.getElementById("firstName").style.backgroundColor = "white";
+                }
+                
+              });
+
+              document.getElementById("lastName").addEventListener("input", function(e) {
+                e.stopPropagation()
+                if (/^[a-zA-Z]/.test(e.target.value)) {
+                    document.getElementById("lastName").style.borderColor = "bleu";;
+                 console.log(document.getElementById("lastNameErrorMsg"))
+                } else {
+                    document.getElementById("lastNameErrorMsg").innerHTML = "Nom invalide entrez seulemnt des caractères a,b,c...";
+                }
+                
+              });
+
+              document.getElementById("city").addEventListener("input", function(e) {
+                e.stopPropagation()
+                if (/^[a-zA-Z]/.test(e.target.value)) {
+                    //document.getElementById("firstNameErrorMsg").innerHTML = "Code valide";
+                    //console.log(document.getElementById("firstName"))
+                    document.getElementById("city").style.backgroundColor = "bleu"
+                } else {
+                    document.getElementById("cityNameErrorMsg").innerHTML = "Ville invalide entrez seulemnt des caractères a,b,c...";
+                    
+                }
+                
+              });
+
+             document.getElementById("email").addEventListener("input", function(e) {
+              
+                if (/^[a-z0-9\-_\.]+@[a-z0-9]+\.[a-z]{2,5}$/i.test(e.target.value)) {
+                    document.getElementById("email").style.backgroundColor = "bleu"
+                } else {
+                    document.getElementById("emailErrorMsg").innerHTML = "email invalide entrez seulemnt des caractères a,b,c...";
+                    
+                }
+                
+              });
+
 
                 // 3. je fais un tableau avec les productsId
                 // a completer => productID
                 // 3. J'envoie au serveur
-                fetch("http://localhost:3000/api/products", {
+               /* fetch("http://localhost:3000/api/products", {
                   method: "POST",
                   headers: {
                     'Content-Type': 'application/json'
@@ -132,10 +178,40 @@ fetch("http://localhost:3000/api/products")
                 .then(function(value) {
                     console.log(value)
                 });
-              }
+              */
 
         }
         })
         .catch(function() {
               
         });  
+
+        function send(e) {
+            e.preventDefault();
+            // 1. Je viens récupérer les donnnées du formulaire
+            let contact = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                address: document.getElementById("address").value,
+                city: document.getElementById("city").value,
+                email: document.getElementById("email").value
+              }
+              
+             /* fetch("http://localhost:3000/api/product/order", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({contact, productsID})
+
+              })
+              .then(function(res) {
+                if (res.ok) {
+                  return res.json();
+                }
+              })
+              .then(function(value) {
+                  console.log(value)
+              });
+            */
+            }
