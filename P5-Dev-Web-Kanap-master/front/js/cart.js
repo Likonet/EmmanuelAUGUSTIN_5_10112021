@@ -1,116 +1,80 @@
-let productsID = []
-fetch("http://localhost:3000/api/products")
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then(function(value) {
-    
-         let toto = localStorage.getItem('cart');   
-         let list = JSON.parse(toto);
-         console.log(toto);
-         console.log(list);
-       
-         console.log (list.length)
-         console.log (list[3].quantity)
-          let totalQuantity = 0
-          
       
-          let sum = list.values();
-          for (const tees of sum) {
-            totalQuantity += parseInt(tees.quantity);
-            productsID.push(tees.id);
-            
-          }
-         console.log (productsID)
+
+         let localCart = localStorage.getItem('cart');   //Récupération du localStorage
+         let panier = JSON.parse(localCart);  //Création de l'objet Cart avec les valeurs du LocalStorage
+         let sum = panier.values(); // Nombre d'éléments que contient l'objet Cart
+         console.log (sum)
+         let productsID = []//Tableau pour récupérer les ID des sofas commandés
          
-         for (let hello of list) {
-             console.log(hello)
+         let totalQuantity = 0// quantité total d'article dans le panier et leur ID
+          for (const qty of sum) {
+            totalQuantity += parseInt(qty.quantity);
+            productsID.push(qty.id); 
+          }
+        
+         
+         for (let data of panier) { // Afficher les éléments du localStorage
+          
             document.getElementById('cart__items').innerHTML +=
-            `<article class="cart__item" data-id="${hello.id}">
+            `<article class="cart__item" data-id="${data.id}">
             <div class="cart__item__img">
-              <img src="${hello.imageSofa}" alt="Photographie d'un canapé">
+              <img src="${data.imageSofa}" alt="Photographie d'un canapé">
             </div>
             <div class="cart__item__content">
               <div class="cart__item__content__titlePrice">
-                <h2>${hello.nameSofa}</h2>
-                <p class= toto>${hello.price*hello.quantity}</p>
+                <h2>${data.nameSofa}</h2>
+                <p class= SofaPrice>${data.price*data.quantity}</p>
               </div>
               <div class="cart__item__content__color">
-                <h3 id="color_sofa">${hello.color}</h2>
+                <h3 id="color_sofa">${data.color}</h2>
               </div>
 
               <div class="cart__item__content__settings">
                 <div class="cart__item__content__settings__quantity">
                   <p>Qté: </p>
-                  <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${hello.quantity}">
+                  <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${data.quantity}">
                 </div>
                 <div class="cart__item__content__settings__delete">
                   <p class="deleteItem">Supprimer</p>
                 </div>
               </div>
             </div>
-          </article> `;
+          </article> `;}
          
-        let totalPrice = 0
-         Array.from(document.querySelectorAll('p.toto')).forEach(roro);
-         function roro(item) {
+          let totalPrice = 0 // Prix total des éléments commandés.
+         Array.from(document.querySelectorAll('p.SofaPrice')).forEach(SofaPrices);
+         function SofaPrices (item) {
           totalPrice += parseInt(item.innerHTML);
-          console.log(totalPrice)
                              }
-        console.log(totalPrice)
-          document.getElementById("totalPrice").innerText = totalPrice; 
-        
-        
 
-        document.getElementById("totalQuantity").innerText = totalQuantity;
+          document.getElementById("totalPrice").innerText = totalPrice; //insérer le prix total
+          document.getElementById("totalQuantity").innerText = totalQuantity; //insérer la quantité totale
 
-          Array.from(document.querySelectorAll('.itemQuantity')).forEach(item => { // récupération de tous les éléments et les insérer dans un tableau.
-          item.addEventListener('change', (e) => {
-            let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ; // récupération du 
-            let colorSofa = e.target.closest('article').querySelector('#color_sofa').innerText ;
-            let newQuantity = e.target.value
-            console.log(e.target.value) 
-            console.log(colorSofa);
-            console.log (list);
-            console.log (nameOfSofa);
-
-
-            let tesst = list.find (elt => elt.nameSofa === nameOfSofa);
-           let indiceArray = list.findIndex (elt => elt.nameSofa === nameOfSofa && elt.color === colorSofa);
-           console.log (indiceArray);
-            list[indiceArray].quantity = newQuantity;
-            localStorage.clear();
-            localStorage.setItem('cart', JSON.stringify(list));
-          window.location.reload()
+          Array.from(document.querySelectorAll('.itemQuantity')).forEach(item => { // récupération de tous les éléments des champs qté et les insérer dans un tableau.
+          item.addEventListener('change', (e) => { // écoute l'évènement du changement de quantité
+            let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ; // récupération du nom du canapé dont la valeur a été modifiée
+            let colorSofa = e.target.closest('article').querySelector('#color_sofa').innerText ;// récupération de la couleur du canapé dont la valeur a été modifiée
+            let newQuantity = e.target.value //récupération de la nouvelle quantité
+            let indiceArray = panier.findIndex (elt => elt.nameSofa === nameOfSofa && elt.color === colorSofa); // quel éléments du tableau a été modifié
+            panier[indiceArray].quantity = newQuantity;// affecter la nouvelle valeur à l'élément modifié
+            localStorage.clear();//vider le local storage
+            localStorage.setItem('cart', JSON.stringify(panier));//affecter les nouvelles valeurs au localStorage
+          window.location.reload()// recharger la pages
           }) 
         
            })
 
-           Array.from(document.querySelectorAll('.deleteItem')).forEach(item => { // for each chaque élément du tableau
-            item.addEventListener('click', (e) => {
-            let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ;
-            let indiceArray = list.findIndex(elt => elt.nameSofa === nameOfSofa);
-            list.splice(indiceArray, 1);
-            localStorage.setItem('cart', JSON.stringify(list));
-            window.location.reload()
-  
-            }) 
-         
+           Array.from(document.querySelectorAll('.deleteItem')).forEach(item => { // récupérer tous les éléments liés au bouton suppression
+            item.addEventListener('click', (e) => { // écoute l'élément "delete"
+            let nameOfSofa = e.target.closest('article').querySelector('h2').innerText ;//nom du sofa supprimer
+            let indiceArray = list.findIndex (elt => elt.nameSofa === nameOfSofa && elt.color === colorSofa); // quel élément du tableau correspond la suppression du sofa
+            list.splice(indiceArray, 1);//suppression de l'élément dans le tableau
+            localStorage.setItem('cart', JSON.stringify(list));// insérer le nouveau tableau dans le localStorage
+            window.location.reload()// recharger la page
+            })         
              })
     
-
-             document.querySelector(".cart__order__form").addEventListener("submit", (e) => {
-                 e.preventDefault();
-                send(e)
-                });
-             
-                // 2. Je viens verifier les donnees du formulaire
-
-    
-
-              document.getElementById("firstName").addEventListener("input", function(e) {
+              document.getElementById("firstName").addEventListener("input", function(e) { // fonction regex pour vérifier prénom
                
                 if (/^[a-zA-Z]{2,}$/.test(e.target.value)) {
                     document.getElementById("firstName").style.backgroundColor = "green";
@@ -123,87 +87,90 @@ fetch("http://localhost:3000/api/products")
                 
               });
 
-              document.getElementById("lastName").addEventListener("input", function(e) {
-                e.stopPropagation()
-                if (/^[a-zA-Z]/.test(e.target.value)) {
-                    document.getElementById("lastName").style.borderColor = "bleu";;
-                 console.log(document.getElementById("lastNameErrorMsg"))
-                } else {
-                    document.getElementById("lastNameErrorMsg").innerHTML = "Nom invalide entrez seulemnt des caractères a,b,c...";
-                }
-                
-              });
-
-              document.getElementById("city").addEventListener("input", function(e) {
-                e.stopPropagation()
-                if (/^[a-zA-Z]/.test(e.target.value)) {
-                    //document.getElementById("firstNameErrorMsg").innerHTML = "Code valide";
-                    //console.log(document.getElementById("firstName"))
-                    document.getElementById("city").style.backgroundColor = "bleu"
-                } else {
-                    document.getElementById("cityNameErrorMsg").innerHTML = "Ville invalide entrez seulemnt des caractères a,b,c...";
-                    
-                }
-                
-              });
-
-             document.getElementById("email").addEventListener("input", function(e) {
+              document.getElementById("lastName").addEventListener("input", function(e) { //fonction regex pour vérifier nom
               
-                if (/^[a-z0-9\-_\.]+@[a-z0-9]+\.[a-z]{2,5}$/i.test(e.target.value)) {
-                    document.getElementById("email").style.backgroundColor = "bleu"
+                if (/^[a-zA-Z]{2,}$/.test(e.target.value)) {
+                document.getElementById("lastName").style.backgroundColor = "green";
+                document.getElementById("lastNameErrorMsg").innerText = "";
+
+                } else {
+                    
+                document.getElementById("lastNameErrorMsg").innerHTML = "Nom invalide entrez seulemnt des caractères a,b,c...";
+                document.getElementById("lastName").style.backgroundColor = "white";
+                }
+                
+              });
+
+
+                
+              document.getElementById("city").addEventListener("input", function(e) { //fonction regex pour vérifier la ville
+            
+                if (/^[a-zA-Z-]{2,}$/.test(e.target.value)) {
+                    document.getElementById("city").style.backgroundColor = "green"
+                    document.getElementById("cityErrorMsg").innerText = "";
+                } else {
+                    document.getElementById("cityErrorMsg").innerHTML = "Ville invalide entrez seulemnt des caractères a,b,c...";
+                    document.getElementById("city").style.backgroundColor = "white";
+                }
+                
+              });
+
+              document.getElementById("address").addEventListener("input", function(e) { // fonction regex pour vérifier l'adresse
+            
+                if (/^\d+\s[A-z]+\s[A-z]+/g.test(e.target.value)) {
+                    document.getElementById("address").style.backgroundColor = "green"
+                    document.getElementById("addressErrorMsg").innerText = "";
+                } else {
+                    document.getElementById("addressErrorMsg").innerHTML = "Adresse invalide ex: 22 rue du coding";
+                    document.getElementById("address").style.backgroundColor = "white";
+                }
+                
+              });
+
+
+             document.getElementById("email").addEventListener("input", function(e) { // fonction regex pour vérifier l'adresse mail
+              
+                if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value)) {
+                    document.getElementById("email").style.backgroundColor = "green"
+                    document.getElementById("emailErrorMsg").innerText = "";
                 } else {
                     document.getElementById("emailErrorMsg").innerHTML = "email invalide entrez seulemnt des caractères a,b,c...";
-                    
+                    document.getElementById("email").style.backgroundColor = "white";
+
                 }
                 
               });
 
-
-                // 3. je fais un tableau avec les productsId
-                // a completer => productID
-                // 3. J'envoie au serveur
-               /* fetch("http://localhost:3000/api/products", {
-                  method: "POST",
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({contact, productID})
-
-                })
-                .then(function(res) {
-                  if (res.ok) {
-                    return res.json();
-                  }
-                })
-                .then(function(value) {
-                    console.log(value)
-                });
-              */
-
-        }
-        })
-        .catch(function() {
-              
-        });  
+     
+        document.querySelector(".cart__order__form").addEventListener("submit", (e) => { // Fn envoi des infos de la pers. qui commande + ID des sofas
+            e.preventDefault();
+               send(e)
+           });
 
         function send(e) {
-            e.preventDefault();
-            // 1. Je viens récupérer les donnnées du formulaire
+          
             let contact = {
-                firstName: document.getElementById("firstName").value,
+                firstName: document.getElementById("firstName").value, // récupération des valeurs des champs
                 lastName: document.getElementById("lastName").value,
                 address: document.getElementById("address").value,
                 city: document.getElementById("city").value,
                 email: document.getElementById("email").value
               }
-              
-             /* fetch("http://localhost:3000/api/product/order", {
-                method: "POST",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({contact, productsID})
 
+              console.log(contact, productsID)
+
+
+             fetch("http://localhost:3000/api/order", {  //http://localhost:3000/api/products
+                method: "POST",
+                body: JSON.stringify({contact}),
+                headers: {
+
+                  'Accept': 'application/json', 
+            'Content-Type': 'application/json'
+                
+                 
+                },
+          
               })
               .then(function(res) {
                 if (res.ok) {
@@ -213,5 +180,5 @@ fetch("http://localhost:3000/api/products")
               .then(function(value) {
                   console.log(value)
               });
-            */
+            
             }

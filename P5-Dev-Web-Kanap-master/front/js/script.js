@@ -9,7 +9,7 @@
     .then(function(value) {
     
         let products = value; 
-        for (let product of products) {
+        for (let product of products) {                 // Récupération des éléments de l'API & affectation au éléments
             document.getElementById('items').innerHTML += `
             <a href="./product.html?id=${product._id}"> 
             <article>
